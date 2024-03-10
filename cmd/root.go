@@ -7,9 +7,16 @@ package cmd
 
 import (
 	"fmt"
+	"image/png"
 	"os"
+	"path/filepath"
+	"pdf-thumbnailer/lib"
+	"strings"
+	"sync"
 
+	"github.com/VinukaThejana/go-utils/logger"
 	"github.com/fatih/color"
+	"github.com/gen2brain/go-fitz"
 	"github.com/spf13/cobra"
 )
 
@@ -42,7 +49,45 @@ var rootCmd = &cobra.Command{
 			return
 		}
 
-		fmt.Println(path, dest)
+		files := lib.GetAllPDFFiles(path)
+
+		var wg sync.WaitGroup
+		wg.Add(len(files))
+
+		for _, path := range files {
+			go func(path string) {
+				defer wg.Done()
+				filename := filepath.Base(path)
+
+				doc, err := fitz.New(path)
+				if err != nil {
+					logger.Error(err)
+					return
+				}
+				defer doc.Close()
+
+				img, err := doc.Image(0)
+				if err != nil {
+					logger.Error(err)
+					return
+				}
+
+				f, err := os.Create(filepath.Join(dest, fmt.Sprintf("%s.png", strings.TrimSuffix(filename, filepath.Ext(path)))))
+				if err != nil {
+					logger.Error(err)
+					return
+				}
+				defer f.Close()
+
+				err = png.Encode(f, img)
+				if err != nil {
+					logger.Error(err)
+					return
+				}
+			}(path)
+		}
+
+		wg.Wait()
 	},
 }
 
