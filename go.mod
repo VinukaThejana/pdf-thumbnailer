@@ -4,6 +4,7 @@ go 1.21.5
 
 require (
 	github.com/VinukaThejana/go-utils/logger v0.0.0-20231010161001-94625009f8d2
+	github.com/fatih/color v1.15.0
 	github.com/spf13/cobra v1.8.0
 )
 
@@ -17,6 +18,7 @@ require (
 	github.com/inconshreveable/mousetrap v1.1.0 // indirect
 	github.com/leodido/go-urn v1.2.3 // indirect
 	github.com/lucasb-eyer/go-colorful v1.2.0 // indirect
+	github.com/mattn/go-colorable v0.1.13 // indirect
 	github.com/mattn/go-isatty v0.0.18 // indirect
 	github.com/mattn/go-runewidth v0.0.14 // indirect
 	github.com/muesli/reflow v0.3.0 // indirect
